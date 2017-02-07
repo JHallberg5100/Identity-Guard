@@ -86,6 +86,13 @@ contract IdentityGuard{
     }
   }
 
+  function returnKey(uint personId) constant returns (bytes32 keyValue){
+    Person p = Clients[personId];
+    if (p.clientAddress == msg.sender || owner == msg.sender){
+      keyValue = p.pubKey;
+    }
+  }
+
   function returnKey(uint personId) constant returns (bytes32 key){
     Person p = Clients[personId];
     if (p.clientAddress == msg.sender || owner == msg.sender){
@@ -178,34 +185,34 @@ contract IdentityGuard{
     if (p.clientAddress == msg.sender || owner == msg.sender){
       p.numBankAccounts += 1;
       accountId = p.numBankAccounts;
-      p.Accounts[accountId] = BankAccount.new(bankName, routingNum, accountNum);
+      p.Accounts[accountId] = BankAccount(bankName, routingNum, accountNum);
     }
   }
 
-  function newID(bytes32 type, uint expDate, uint licNum, uint personId) returns (uint IDnum){
+  function newID(bytes32 IDType, uint expDate, uint licNum, uint personId) returns (uint IDnum){
     Person p = Clients[personId];
     if (p.clientAddress == msg.sender || owner == msg.sender){
       p.numIDs += 1;
       IDnum = p.numIDs;
-      p.IDs[IDnum] = ID.new(type, expDate, licNum);
+      p.IDs[IDnum] = ID(IDType, expDate, licNum);
     }
   }
 
   function returnBankAccount(uint personId, uint accountId) constant returns (bytes32 bankName, uint routingNum, uint accountNum){
     Person p = Clients[personId];
     if (p.clientAddress == msg.sender || owner == msg.sender){
-      BankAccount a = Accounts[accountId];
+      BankAccount a = p.Accounts[accountId];
       bankName = a.bankName;
       routingNum = a.routingNum;
       accountNum = a.accountNum;
     }
   }
 
-  function returnID(uint personId, uint IDnum) constant returns (bytes32 type, uint expDate, uint licNum){
+  function returnID(uint personId, uint IDnum) constant returns (bytes32 IDType, uint expDate, uint licNum){
     Person p = Clients[personId];
     if (p.clientAddress == msg.sender || owner == msg.sender){
-      ID i = IDs[IDnum];
-      type = i.IDType;
+      ID i = p.IDs[IDnum];
+      IDType = i.IDType;
       expDate = i.expDate;
       licNum = i.licNum;
     }
