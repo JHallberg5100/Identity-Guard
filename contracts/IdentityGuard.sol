@@ -41,7 +41,7 @@ contract IdentityGuard{
     uint numCreditCards;
     uint numBankAccounts;
     uint numIDs;
-    bytes32 pubKey;
+    bytes pubKey;
 
     mapping ( uint => LoginInformation) Logins;
     mapping (uint => CreditCard) Cards;
@@ -55,7 +55,7 @@ contract IdentityGuard{
     numPersons = 0;
   }
 
-  function newPerson(bytes32 fn, bytes32 ln, bytes32 key) returns (uint personId) {
+  function newPerson(bytes32 fn, bytes32 ln, bytes key) returns (uint personId) {
       personId = numPersons++;
       Clients[personId] = Person(msg.sender,fn,ln,0,0,0,0, key);
   }
@@ -86,17 +86,10 @@ contract IdentityGuard{
     }
   }
 
-  function returnKey(uint personId) constant returns (bytes32 keyValue){
+  function returnKey(uint personId) constant returns (bytes keyValue){
     Person p = Clients[personId];
     if (p.clientAddress == msg.sender || owner == msg.sender){
       keyValue = p.pubKey;
-    }
-  }
-
-  function returnKey(uint personId) constant returns (bytes32 key){
-    Person p = Clients[personId];
-    if (p.clientAddress == msg.sender || owner == msg.sender){
-      key = p.pubKey;
     }
   }
 
