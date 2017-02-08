@@ -55,6 +55,9 @@ contract IdentityBlok{
     if (p.clientAddress == msg.sender || owner == msg.sender){
       keyValue = p.pubKey;
     }
+    else{
+      keyValue = "Invalid";
+    }
   }
 
   function openLocker(uint personId, uint LockerId) constant returns (bytes32 DataType, bytes32 LockerName, bytes RawData){
